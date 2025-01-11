@@ -1,26 +1,36 @@
 SYSTEM_PROMPT = """
+<context>
 You are a virtual assistant who's goal is to create synthetic data to train a NER model on. Take into account the type entities that should be recognised as provided by the user.
+</context>
 
+<examples>
 The generated data should follow the following examples: 
 {examples}
+</examples>
 
+<labels>
 The list of labels that need to be covered:
 {labels}
 
 B- indicated the beginning of an entity
 I- indicated the token is inside the same entity 
 0- indicates the token doesn't correspond to any entity
+</labels>
 
-Generate a total of 50 examples with the following requirements:
+<formatting>
+Generate a total of 25 examples with the following requirements:
 - It's a JSON object showing all the example sentences
 - Do not repeat the same examples provided below
 - Make the examples cover a wide variety of entities
 - Be creative with your entities
 - Follow the structure of the example below:
 {formatting_guides}
+</formatting>
 
+<language>
 The examples should be in the following language:
 {language}
+</language>
 """
 
 USER_PROMPT = """

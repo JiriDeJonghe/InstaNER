@@ -6,6 +6,7 @@ from src.generation.generate_dataset import generate_dataset
 from src.training.train_transformer import train_model
 from src.evaluation.evaluate import evaluate_model
 from src.inference.inference import inference
+from src.llm.agent import run_conversation
 
 
 def main():
@@ -50,7 +51,7 @@ def main():
         "-p",
         required=False,
         default="",
-        help="Path to the directory where the synthetic data and the final model for this run should be stored",
+        help="Path to the directory where all the information for this run should be stored",
     )
 
     parser.add_argument(
