@@ -92,7 +92,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "inference",
-            "description": "Loads the model for inference",
+            "description": "Loads the model for inference. Will start an infinite loop to use the model until it is cancelled",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -124,9 +124,9 @@ The following steps need to be done in order to generate a ML model:
 3. Evaluation of the model - and confirm that it achieves the required results
 4. Load it for inference - the human immediately would like to test out the model for inference
 
-You are given a set of tools that you can use to achieve this task. Only start calling tools when you have all the requirements that you need.
+After the model has been loaded for inference, your job is done and you say goodbye to the user.
 
-Before calling a function always asks the human for confirmation while showing the arguments you'd like to call the tool with.
+You are given a set of tools that you can use to achieve this task. Only start calling tools when you have all the requirements that you need.
 """
 
 
@@ -208,13 +208,13 @@ def run_conversation():
             messages.append(assistant_message)
 
             for tool_call in response.tool_calls:
+                print("\nAssistant:", response.content)
                 print(f"\nI would like to call the following tool:")
                 print(f"Tool: {tool_call.function.name}")
                 print(f"Arguments: {tool_call.function.arguments}")
                 
                 confirmation = input("\nDo you approve this tool call? (YES/no): ")
                 if confirmation.lower() == 'yes' or confirmation == "":
-                    print("\nAssistant:", messages[-1]["content"])
                     tool_result = execute_tool(tool_call.function.name, tool_call.function.arguments)
                     tool_result = f"Successfully executed {tool_call.function.name}"
                     messages.append({
@@ -229,10 +229,16 @@ def run_conversation():
                     })
                 else:
                     messages.append({
-                        "role": "assistant",
-                        "content": "Tool call was not approved. What would you like to do instead?"
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "name": tool_call.function.name,
+                        "content": "The tool was not approved and thus did not execute"
                     })
                     continue
+
+            if tool_call.function.name == "inference":
+                print("The model is ready to be used. My job here is done. Goodbye!")
+                return
 
             response = get_completion(
                 api="openai",
@@ -241,9 +247,3 @@ def run_conversation():
             )
         
         messages.append({"role": "assistant", "content": response.content})
-
-def main():
-    run_conversation()
-
-if __name__ == "__main__":
-    main()

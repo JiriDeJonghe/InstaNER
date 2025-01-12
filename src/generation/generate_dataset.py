@@ -87,8 +87,8 @@ def create_entity_list(entities: list[str], path: str) -> list[str]:
     """
     labels = ["0"]
     for entity in entities:
-        labels.append(f"B-{entity}")
-        labels.append(f"I-{entity}")
+        labels.append(f"B-{entity.upper()}")
+        labels.append(f"I-{entity.upper()}")
 
     id2label = {}
     label2id = {}

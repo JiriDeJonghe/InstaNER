@@ -123,7 +123,7 @@ class NERDataset(Dataset):
 
         for token, label in sentence:
             tokens.append(token)
-            ner_tag = label2id[label]
+            ner_tag = label2id[label.upper()]
             ner_tags.append(int(ner_tag))
 
         return ner_tags, tokens

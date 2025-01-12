@@ -50,7 +50,7 @@ def train_model(
 
     train_dataset, test_dataset = load_train_test_dataset(dir_path)
 
-    print("Loader Dataset")
+    print("Loaded Dataset")
     print("Training set size: ", len(train_dataset))
     print("Testing set size: ", len(test_dataset))
 
@@ -96,6 +96,7 @@ def train_model(
     write_variable_to_config(dir_path, training_info_dict)
     print("Arguments Defined")
 
+
     # Define the Trainer
     trainer = Trainer(
         model=model,
@@ -114,7 +115,6 @@ def train_model(
 
     print("-" * 32)
     print("Model Training Complete")
-    return train_dataset, test_dataset
 
 
 def get_model_name_from_language(language: str):
