@@ -27,7 +27,7 @@ tools = [
                     },
                     "dir_path": {
                         "type": "string",
-                        "description": "Path to the directory for this experiment"
+                        "description": "Directory to store the data in"
                     },
                     "api": {
                         "type": "string",
@@ -56,11 +56,11 @@ tools = [
                 "properties": {
                     "dir_path": {
                         "type": "string",
-                        "description": "Path to the directory for this experiment"
+                        "description": "Directory to store the data in"
                     },
                     "language": {
                         "type": "string",
-                        "description": "Path to the file to save the generated samples"
+                        "description": "Language of the generated dataset"
                     },
                 },
                 "required": ["dir_path", "language"]
@@ -70,17 +70,21 @@ tools = [
     {
         "type": "function",
         "function": {
-            "name": "evalute_model",
+            "name": "evaluate_model",
             "description": "Evaluates the model after it has been trained",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "dir_path": {
                         "type": "string",
-                        "description": "Path to the directory for this experiment"
+                        "description": "Directory to store the data in"
+                    },
+                    "language": {
+                        "type": "string",
+                        "description": "Language of the generated dataset"
                     },
                 },
-                "required": ["dir_path"]
+                "required": ["dir_path", "language"]
             }
         }
     },
@@ -94,10 +98,14 @@ tools = [
                 "properties": {
                     "dir_path": {
                         "type": "string",
-                        "description": "Path to the directory for this experiment"
+                        "description": "Directory to store the data in"
+                    },
+                    "language": {
+                        "type": "string",
+                        "description": "Language of the generated dataset"
                     },
                 },
-                "required": ["dir_path"]
+                "required": ["dir_path", "language"]
             }
         }
     },
@@ -189,6 +197,7 @@ def run_conversation():
                 "tool_calls": [
                     {
                         "id": tool_call.id,
+                        "type": "function",
                         "function": {
                             "name": tool_call.function.name,
                             "arguments": tool_call.function.arguments
@@ -205,6 +214,7 @@ def run_conversation():
                 
                 confirmation = input("\nDo you approve this tool call? (YES/no): ")
                 if confirmation.lower() == 'yes' or confirmation == "":
+                    print("\nAssistant:", messages[-1]["content"])
                     tool_result = execute_tool(tool_call.function.name, tool_call.function.arguments)
                     tool_result = f"Successfully executed {tool_call.function.name}"
                     messages.append({
@@ -212,6 +222,10 @@ def run_conversation():
                         "tool_call_id": tool_call.id,
                         "name": tool_call.function.name,
                         "content": tool_result
+                    })
+                    messages.append({
+                        "role": "user",
+                        "content": "What's next?"
                     })
                 else:
                     messages.append({

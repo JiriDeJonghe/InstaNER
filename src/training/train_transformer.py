@@ -36,6 +36,9 @@ def train_model(
     print("Starting Training")
     print("-" * 32)
 
+    root = Path(__file__).parents[2]
+    dir_path = Path.joinpath(root, "experiments", language, dir_path)
+
     # Load dataset and update config for reproducability
     model_name = get_model_name_from_language(language)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
