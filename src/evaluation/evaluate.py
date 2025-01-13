@@ -10,33 +10,38 @@ from src.datasets import (
 )
 
 
-def evaluate_model(dir_path: str, model_type: str = "transformer"):
+def evaluate_model(dir_path: str, language: str, model_type: str = "transformer"):
     """
     Evaluates the model on the given dataset. Can be either supplied as a NERDataset object or a string with the name of the dataset
 
     Args:
         dir_path (str): path to the dir containing the model and dataset to evaluate
+        language (str): language of the generated dataset and model
         model_type (str): type of the model to evaluate
 
     Returns:
         dict[str]: contains the computed metrics
     """
     if model_type == "transformer":
-        return evalute_transformer_model(dir_path)
+        return evalute_transformer_model(dir_path, language)
 
 
-def evalute_transformer_model(dir_path: str):
+def evalute_transformer_model(dir_path: str, language: str):
     """
     Evaluates the model on the given datase. Can be either supplied as a NERDataset object or a string with the name of the dataset
 
     Args:
         dir_path (str): path to the dir containing the model and dataset to evaluate
+        language (str): language of the generated dataset and model
 
     Returns:
         dict[str]: contains the computed metrics
     """
     print("Starting Evaluation")
     print("-" * 32)
+
+    root = Path(__file__).parents[2]
+    dir_path = Path.joinpath(root, "experiments", language, dir_path)
 
     if not Path.exists(Path.joinpath(dir_path)):
         raise Exception("Directory does not exist")

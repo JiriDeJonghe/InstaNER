@@ -3,15 +3,20 @@ import argparse
 from pathlib import Path
 
 
-def inference(dir_path: str) -> None:
+def inference(dir_path: str, language: str) -> None:
     """
     Detects the token entities from a sentence using Named Entity Recognition and prints them out to standard output.
 
     Args:
         dir_path (str): path to the dir containing the model
+        language (str): language of the generated dataset and model
     """
     print("Starting Inference")
     print("-" * 32)
+
+    root = Path(__file__).parents[2]
+    dir_path = Path.joinpath(root, "experiments", language, dir_path)
+
     model_path = Path.joinpath(dir_path, "model")
     classifier = pipeline("ner", model=model_path)
 
