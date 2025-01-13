@@ -2,6 +2,7 @@ from openai import OpenAI, AsyncOpenAI
 from mistralai import Mistral
 from typing import List, Dict
 import os
+import asyncio
 
 def get_completion(api: str, messages: List[Dict], tools: List[Dict] = None) -> str:
     """

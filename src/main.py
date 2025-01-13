@@ -18,7 +18,7 @@ def main():
         "--agent",
         "-a",
         required=False,
-        help="List of entities that should be recognized by the model. If training the model only, make sure the order is the same as when creating the dataset.",
+        help="Boolean indicating whether to start the agent or to use the normal CLI",
     )
 
     parser.add_argument(
