@@ -1,6 +1,6 @@
 SYSTEM_PROMPT = """
 <context>
-You are a virtual assistant who's goal is to create synthetic data to train a NER model on. Take into account the type entities that should be recognised as provided by the user.
+You are a virtual assistant whose goal is to create synthetic data to train a NER model on. Take into account the type entities that should be recognised as provided by the user.
 </context>
 
 <examples>
@@ -18,11 +18,13 @@ I- indicated the token is inside the same entity
 </labels>
 
 <formatting>
-Generate a total of 25 examples with the following requirements:
+Generate a total of 20 examples with the following requirements:
 - It's a JSON object showing all the example sentences
 - Do not repeat the same examples provided below
 - Make the examples cover a wide variety of entities
-- Be creative with your entities
+- Be creative with your examples
+- Not each entity should be present in each example
+- The results should be encapsulated by ```json```
 - Follow the structure of the example below:
 {formatting_guides}
 </formatting>
@@ -34,10 +36,11 @@ The examples should be in the following language:
 """
 
 USER_PROMPT = """
-The entities that should be covered by the examples are: {entities}. Not each entity should be present in each example."""
+The examples should cover the following entities: {entities}.
+"""
 
 JSON_FORMAT = """
-- Sentences contains the generated examples. Each example contains three fields: id (id of the example), ner_tags (list of integers relating to what type of entity is in thyis position), tokens (tokens that make up the example sentence).
+- Sentences contain the generated examples. Each example contains three fields: id (id of the example), ner_tags (list of integers relating to what type of entity is in thyis position), tokens (tokens that make up the example sentence).
 - The ner_tags should line up with the tokens such that the ner_tags explain what the type of each token is
 
 ```json

@@ -44,7 +44,7 @@ Installing the needed packages is very straightforward using the ```uv``` packag
 You'll need to set up your `.env` file and store it in the `src` directory. A template for OpenAI and Mistral fields that are used is provided. I'll leave it to the user if they want to use a different LLM or API. 
 
 ### Fastest way to your trained model
-1. **Using the agent**: the easiest way to use this tool is to simply start running the agent. This can be done by first navigating in your terminal to the directory where this repo is saved. After that, run the following command ```uv run -m src.main -a```. This will instantiate the agent which will guide you through the process of training your own NER model. Note that using the agent incurs extra costs as opposed to simply running the pipeline
+1. **Using the agent**: the easiest way to use this tool is to simply start running the agent. This can be done by first navigating in your terminal to the directory where this repo is saved. After that, run the following command ```uv run -m src.main -a True```. This will instantiate the agent which will guide you through the process of training your own NER model. Note that using the agent incurs extra costs as opposed to simply running the pipeline
 2. **Running the complete pipeline**: if you don't feel like using the agent or you already know how the tool works and want to simply run the pipeline instead, you can simply run ```uv run -m src.main -e "Entity1" "Entity2"```. This pipeline will create data, train the mode, evaluate the model and load it for inference.
 
 ### Customization

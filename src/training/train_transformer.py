@@ -6,32 +6,25 @@ from transformers import (
     TrainingArguments,
     Trainer,
 )
-from functools import partial
 
-from src.evaluation.eval_metrics import compute_metrics
 from src.datasets import (
     load_train_test_dataset,
-    NERDataset,
     read_variable_from_config,
     write_variable_to_config,
 )
 
 
 def train_model(
-    dir_path: str,
+    dir_path: Path,
     language: str = "english",
-) -> tuple[NERDataset, NERDataset]:
+) -> None:
     """
     Trains a NER model based on the distilbert-base-uncased given the labels.
 
     Args:
-        dir_path (str): path to the file containing the examples
+        dir_path (Path): path to the file containing the examples
         language (str): language of the generated dataset and model
-
-    Returns:
-        NERDataset: training dataset
-        NERDataset: test dataset
-    """
+   """
     print("\n")
     print("Starting Training")
     print("-" * 32)
@@ -42,8 +35,8 @@ def train_model(
     # Load dataset and update config for reproducability
     model_name = get_model_name_from_language(language)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    write_variable_to_config(dir_path, {"model": model_name})
-    write_variable_to_config(dir_path, {"tokenizer": model_name})
+    write_variable_to_config(str(dir_path), {"model": model_name})
+    write_variable_to_config(str(dir_path), {"tokenizer": model_name})
 
     label2id = read_variable_from_config(dir_path, "label2id")
     id2label = read_variable_from_config(dir_path, "id2label")

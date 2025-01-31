@@ -10,12 +10,12 @@ from src.datasets import (
 )
 
 
-def evaluate_model(dir_path: str, language: str, model_type: str = "transformer"):
+def evaluate_model(dir_path: Path, language: str, model_type: str = "transformer"):
     """
     Evaluates the model on the given dataset. Can be either supplied as a NERDataset object or a string with the name of the dataset
 
     Args:
-        dir_path (str): path to the dir containing the model and dataset to evaluate
+        dir_path (Path): path to the dir containing the model and dataset to evaluate
         language (str): language of the generated dataset and model
         model_type (str): type of the model to evaluate
 
@@ -23,15 +23,15 @@ def evaluate_model(dir_path: str, language: str, model_type: str = "transformer"
         dict[str]: contains the computed metrics
     """
     if model_type == "transformer":
-        return evalute_transformer_model(dir_path, language)
+        return evaluate_transformer_model(dir_path, language)
 
 
-def evalute_transformer_model(dir_path: str, language: str):
+def evaluate_transformer_model(dir_path: Path, language: str):
     """
     Evaluates the model on the given datase. Can be either supplied as a NERDataset object or a string with the name of the dataset
 
     Args:
-        dir_path (str): path to the dir containing the model and dataset to evaluate
+        dir_path (Path): path to the dir containing the model and dataset to evaluate
         language (str): language of the generated dataset and model
 
     Returns:
@@ -52,7 +52,7 @@ def evalute_transformer_model(dir_path: str, language: str):
     try:
         label2id = read_variable_from_config(dir_path, "label2id")
         id2label = read_variable_from_config(dir_path, "id2label")
-        train_dataset, test_dataset = load_train_test_dataset(dir_path)
+        _, test_dataset = load_train_test_dataset(dir_path)
     except Exception as e:
         print(f"Error loading dataset: {e}")
         return

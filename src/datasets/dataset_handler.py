@@ -9,13 +9,13 @@ import os
 from .ner_dataset import NERDataset
 
 
-def load_train_test_dataset(dir_path: str, type: str = "transformer"):
+def load_train_test_dataset(dir_path: Path, type: str = "transformer"):
     """
     Loads the train and test dataset for an experiment located at dir_path.
     Converts the dataset in a suitable format for the model training.
 
     Args:
-        dir_path (str): path to the dir for the experiment
+        dir_path (Path): path to the dir for the experiment
         type (str): type of the model to generate the datasets for
 
     Returns:
@@ -28,9 +28,9 @@ def load_train_test_dataset(dir_path: str, type: str = "transformer"):
 
     # Preprocess the tokens field, reproducable results using seed
     seed = read_variable_from_config(dir_path, "seed")
-    if seed is None:
-        seed = random.randint(0, 100000) if seed is None else seed
-        write_variable_to_config(dir_path, {"seed": seed})
+    if not seed:
+        seed = random.randint(0, 100000) if not seed else seed
+        write_variable_to_config(str(dir_path), {"seed": seed})
 
     train_sentences, test_sentences = train_test_split(
         sentences, test_size=0.2, random_state=seed
@@ -45,13 +45,13 @@ def load_train_test_dataset(dir_path: str, type: str = "transformer"):
 
 
 def load_train_test_dataset_transformer(
-    dir_path: str, train_sentences: list[str], test_sentences: list[str]
+    dir_path: Path, train_sentences: list[str], test_sentences: list[str]
 ) -> tuple[NERDataset, NERDataset]:
     """
     Constructs the training and test dataset for a transformer model
 
     Args:
-        dir_path (str): path to the dir for the experiment
+        dir_path (Path): path to the dir for the experiment
         train_sentences (list[str]): list of training examples
         test_sentences (list[str]): list of test examples
 
@@ -73,12 +73,12 @@ def load_train_test_dataset_transformer(
     return train_dataset, test_dataset
 
 
-def read_examples(file_path: str) -> list[str]:
+def read_examples(file_path: Path) -> list[str]:
     """
     Reads examples from the generated dataset file and loads them into a list
 
     Args:
-        file_path (str): path to the file to read the sentences from
+        file_path (Path): path to the file to read the sentences from
 
     Returns:
         list[str]: sentences to train the model on
@@ -135,12 +135,12 @@ def write_variable_to_config(dir_path: str, config_update_dict: Dict[str, Any]) 
         json.dump(config, f)
 
 
-def read_variable_from_config(dir_path: str, key_name: str) -> str:
+def read_variable_from_config(dir_path: Path, key_name: str) -> str:
     """
     Retrieves a variable from the config file
 
     Args:
-        dir_path (str): path to the dir where the config file is
+        dir_path (Path): path to the dir where the config file is
         key_name (str): name of the variable to retrieve
 
     Returns:

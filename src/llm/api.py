@@ -1,17 +1,17 @@
 from openai import OpenAI, AsyncOpenAI
 from mistralai import Mistral
-from typing import List, Dict
+from typing import Optional
 import os
 import asyncio
 
-def get_completion(api: str, messages: List[Dict], tools: List[Dict] = None) -> str:
+def get_completion(api: str, messages: list[dict[str, str]], tools: Optional[list[dict[str, str]]] = None) -> str:
     """
     Gets an LLM completion
 
     Args:
         api (str): the name of the API to use (can be OpenAI or Mistral)
-        messages (List[Dict]): the messages to send to the LLM
-        tools (List[Dict], Optional): the tools the LLM can use
+        messages (list[dict[str, str]]): the messages to send to the LLM
+        tools (list[dict[str, str]], Optional): the tools the LLM can use
 
     Returns:
         str: completion of the LLM
@@ -23,14 +23,14 @@ def get_completion(api: str, messages: List[Dict], tools: List[Dict] = None) -> 
     return completion
 
 
-async def async_get_completion(api: str, messages: List[str], tools: List[Dict] = None):
+async def async_get_completion(api: str, messages: list[dict[str, str]], tools: Optional[list[dict[str, str]]] = None) -> str:
     """
     Gets an LLM completion asynchronously
 
     Args:
         api (str): the name of the API to use (can be OpenAI or Mistral)
-        messages (List[Dict]): the messages to send to the LLM
-        tools (List[Dict], Optional): the tools the LLM can use
+        messages (list[dict[str, str]]): the messages to send to the LLM
+        tools (list[dict[str, str]], Optional): the tools the LLM can use
 
     Returns:
         str: completion of the LLM
@@ -42,12 +42,13 @@ async def async_get_completion(api: str, messages: List[str], tools: List[Dict] 
     return completion
 
 
-def get_llm_client(api: str, async_: str = False):
+def get_llm_client(api: str, async_: bool = False):
     """
     Creates a client instance to make API calls
 
     Args:
-        str: name of the API to use
+        api (str): name of the API to use
+        async_ (boolean): true if wanting an async client
 
     Returns:
         Client: client of the API type to make API calls with
@@ -119,14 +120,14 @@ def get_completion_func(api: str):
         raise ValueError("API type is not supported")
 
 
-def call_mistral_api(client: Mistral, messages: List[Dict], tools: List[Dict]):
+def call_mistral_api(client: Mistral, messages: list[dict], tools: list[dict]):
     """
     Sends a completion request to Mistral API user a Mistral client.
 
     Args:
         client (Mistral): client used to make the API call
-        messages (List[Dict]): the messages to send to the LLM
-        tools (List[Dict]): the tools that can be used by the LLM
+        messages (list[dict]): the messages to send to the LLM
+        tools (list[dict]): the tools that can be used by the LLM
 
     Returns:
         str: the completion returned by the Mistral API
@@ -144,15 +145,15 @@ def call_mistral_api(client: Mistral, messages: List[Dict], tools: List[Dict]):
 
 
 def call_openai_api(
-    client: OpenAI, messages: List[Dict], tools: List[Dict]
+    client: OpenAI, messages: list[dict], tools: list[dict]
 ):
     """
     Sends a completion request to OpenAI API user an AzureOpenAI client.
 
     Args:
         client (OpenAI): client used to make the API call
-        messages (List[Dict]): the messages to send to the LLM
-        tools (List[Dict]): the tools that can be used by the LLM
+        messages (list[dict]): the messages to send to the LLM
+        tools (list[dict]): the tools that can be used by the LLM
 
     Returns:
         str: the completion returned by the OpenAI API
@@ -187,13 +188,14 @@ def get_async_completion_func(api: str):
         raise ValueError("API type is not supported")
 
 
-async def async_call_mistral_api(client: Mistral, messages: List[Dict], tools: List[Dict] = None):
+async def async_call_mistral_api(client: Mistral, messages: list[dict], tools: list[dict] = None):
     """
     Sends a completion request to Mistral API user a Mistral client.
 
     Args:
         client (Mistral): client used to make the API call
-        messages (List[Dict]): the messages to pass on to the LLM
+        messages (list[dict]): the messages to pass on to the LLM
+        tools (list[dict], Optional): the tools the LLM can use
 
     Returns:
         str: the completion returned by the Mistral API
@@ -205,6 +207,7 @@ async def async_call_mistral_api(client: Mistral, messages: List[Dict], tools: L
                 model=os.getenv("MISTRAL_MODEL_NAME"),
                 messages=messages,
                 temperature=0.8,
+                tools=tools,
             ),
         )
     except Exception as e:
@@ -214,15 +217,15 @@ async def async_call_mistral_api(client: Mistral, messages: List[Dict], tools: L
 
 
 async def async_call_openai_api(
-    client: AsyncOpenAI, messages: List[Dict], tools: List[Dict] = None
+    client: AsyncOpenAI, messages: list[dict], tools: list[dict] = None
 ):
     """
     Sends a completion request to OpenAI API user an AzureOpenAI client.
 
     Args:
         client (AzureOpenAI): client used to make the API call
-        messages (List[Dict]): the messages to pass on to the LLM
-        tools (List[Dict], Optional): the tools the LLM can use
+        messages (list[dict]): the messages to pass on to the LLM
+        tools (list[dict], Optional): the tools the LLM can use
 
     Returns:
         str: the completion returned by the OpenAI API

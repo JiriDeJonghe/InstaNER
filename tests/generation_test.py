@@ -1,9 +1,9 @@
 from pathlib import Path
+import shutil
 import os
 
 from src.generation.generate_dataset import generate_dataset
 from src.datasets import read_variable_from_config
-
 
 def test_generation_with_mistral():
     entities = ["Person", "Location", "Organization"]
@@ -12,10 +12,8 @@ def test_generation_with_mistral():
     api = "mistral"
     nb_samples = 50
 
-    if not os.path.isdir(dir_path):
-        os.makedirs(dir_path)
-    if os.path.isfile(Path.joinpath(dir_path, "dataset.txt")):
-        os.remove(Path.joinpath(dir_path, "dataset.txt"))
+    if dir_path.exists():
+        shutil.rmtree(dir_path)
 
     generate_dataset(
         entities=entities,
@@ -44,6 +42,10 @@ def test_generation_with_openai():
     entities = ["Person", "Location", "Organization"]
     root = Path(__file__).parents[1]
     dir_path = Path.joinpath(root, "experiments", "english", "test_openai")
+
+    if dir_path.exists():
+        shutil.rmtree(dir_path)
+
     api = "openai"
     nb_samples = 50
 

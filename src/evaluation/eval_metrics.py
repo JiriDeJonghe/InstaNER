@@ -3,8 +3,8 @@ import numpy as np
 
 
 def compute_metrics(
-    p: tuple(list[str]), label2id: dict[str], id2label: dict[str]
-) -> dict[str]:
+    p: tuple(list[str]), label2id: dict[str, int], id2label: dict[int, str]
+) -> dict[str, dict[str, float]]:
     """
     Computes precision, recall f1 and accuracy for the given predictions.
     The metrics are computed both for the overall dataset and for each class separately

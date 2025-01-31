@@ -7,7 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
     "evaluate>=0.4.3",
     "mistralai>=1.2.1",
+    "numpy>=2.1.2",
     "openai>=1.53.0",
+    "pytest>=8.3.4",
     "python-dotenv>=1.0.1",
     "scikit-learn>=1.5.2",
     "seqeval>=1.2.2",

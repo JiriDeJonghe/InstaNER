@@ -2,10 +2,10 @@ from pathlib import Path
 import argparse
 import datetime
 
-from src.generation.generate_dataset import generate_dataset
-from src.training.train_transformer import train_model
-from src.evaluation.evaluate import evaluate_model
-from src.inference.inference import inference
+from src.generation import generate_dataset
+from src.training import train_model
+from src.evaluation import evaluate_model
+from src.inference import inference
 from src.llm.agent import run_conversation
 
 
@@ -71,14 +71,12 @@ def main():
     )
 
     args = parser.parse_args()
-    print(args)
 
     if args.agent:
         run_conversation()
         return
 
     try:
-        root = Path(__file__).parents[1]
         path = (
             datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             if not args.path
