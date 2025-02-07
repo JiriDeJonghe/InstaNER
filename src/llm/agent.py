@@ -1,6 +1,5 @@
 import json
-from typing import List, Dict, Any
-from openai import OpenAI
+from typing import Any
 
 from src.llm.api import get_completion
 from src.generation.generate_dataset import generate_dataset
@@ -40,6 +39,13 @@ tools = [
                     "language": {
                         "type": "string",
                         "description": "Language of the generated dataset"
+                    },
+                    "examples": {
+                        "type": "array",
+                        "description": "Examples on which the generated samples can be based on",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                 },
                 "required": ["entities", "dir_path", "api", "nb_samples", "language"]
@@ -126,7 +132,10 @@ The following steps need to be done in order to generate a ML model:
 
 After the model has been loaded for inference, your job is done and you say goodbye to the user.
 
-You are given a set of tools that you can use to achieve this task. Always asks the user for ALL of the arguments of the functions, if they don't provide any, propose something and explain why. Only start calling tools when you have all the requirements that you need.
+You are given a set of tools that you can use to achieve this task. 
+- Always asks the user for ALL of the required arguments of the functions, if they don't provide any, propose something and explain why. 
+- Always asks whether the user wants to add optional arguments.
+- Only start calling tools when you have all the requirements that you need.
 """
 
 
@@ -137,13 +146,13 @@ tool_registry = {
     "inference": inference
 }
 
-def execute_tool(tool_name: str, arguments: Dict[str, Any]) -> str:
+def execute_tool(tool_name: str, arguments: dict[str, Any]) -> str:
     """
     Executes the tool with the given arguments
 
     Args:
         tool_name (str): name of the tool to execute
-        arguments (Dict[str, Any]): arguments to call the tool with
+        arguments (dict[str, Any]): arguments to call the tool with
 
     Returns:
         str: result of the tool call

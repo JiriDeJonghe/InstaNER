@@ -4,19 +4,20 @@ import json
 from dotenv import load_dotenv
 import math
 import asyncio
+from typing import Optional
 
 from src.llm.exceptions import InvalidLLMResponseException
 from src.datasets.dataset_handler import read_variable_from_config
 from src.generation.exceptions import ExperimentExistsException
 from src.generation import prompts as p
-from src.datasets import write_examples, write_variable_to_config
+from src.datasets import write_samples, write_variable_to_config
 from src.llm.api import async_get_completion
 
 load_dotenv()
 
 
 def generate_dataset(
-    entities: list[str], dir_path: Path, api: str, nb_samples: int, language: str
+    entities: list[str], dir_path: Path, api: str, nb_samples: int, language: str, examples: Optional[list[str]] = None
 ): 
     """
     Generates synthetic data for the training of NER
@@ -27,6 +28,7 @@ def generate_dataset(
         api (str): API to use to generate the dataset
         nb_samples (int): number of samples that need to be generated for the dataset
         language (str): language of the generated dataset
+        examples (list[str], optional): a list of examples to add to the prompt to guide the LLM generation
 
     Raises:
         ExperimentExistsException: if the directory for this experiment already exists
@@ -50,6 +52,9 @@ def generate_dataset(
         formatting_guides=p.TUPLE_FORMAT,
         language=language,
     )
+    if examples:
+        system_prompt += p.EXAMPLES_PROMPT.format(examples = examples)
+
     user_prompt = p.USER_PROMPT.format(entities=entities)
 
     asyncio.run(
@@ -129,7 +134,7 @@ async def create_dataset(
                 content = result.content
                 sentences = clean_output(content)
                 await asyncio.get_event_loop().run_in_executor(
-                    None, write_examples, file_path, sentences
+                    None, write_samples, file_path, sentences
                 )
                 break
             except Exception as e:

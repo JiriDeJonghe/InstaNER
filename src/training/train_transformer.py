@@ -127,4 +127,4 @@ def get_model_name_from_language(language: str):
         case "dutch":
             return "GroNLP/bert-base-dutch-cased"
         case _:
-            return "bert-base-multilingual-cased"
+            return "bert-base-multilingual-uncased"

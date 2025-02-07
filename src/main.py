@@ -1,8 +1,7 @@
-from pathlib import Path
 import argparse
 import datetime
 
-from src.generation import generate_dataset
+from src.generation.generate_dataset import generate_dataset
 from src.training import train_model
 from src.evaluation import evaluate_model
 from src.inference import inference
@@ -70,6 +69,15 @@ def main():
         help="The steps of the pipeline that you want to run. Can be 'all', 'generation', 'training', 'evaluation', 'inference'. Defaults to 'all'.",
     )
 
+    parser.add_argument(
+        "--examples",
+        "-ex",
+        nargs="+",
+        required=False,
+        default=[""],
+        help="Examples that can be used for generating new data"
+    )
+
     args = parser.parse_args()
 
     if args.agent:
@@ -90,6 +98,7 @@ def main():
                 api=args.api,
                 nb_samples=int(args.nb_samples),
                 language=args.language,
+                examples=args.examples if args.examples else None
             )
         if any(x in ["all", "training"] for x in args.steps):
             train_model(

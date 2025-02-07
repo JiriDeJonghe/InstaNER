@@ -24,7 +24,7 @@ def load_train_test_dataset(dir_path: Path, type: str = "transformer"):
     """
     # Reading in examples that were generated in sentences.txt
     file_path = Path.joinpath(dir_path, "dataset.txt")
-    sentences = read_examples(file_path)
+    sentences = read_samples(file_path)
 
     # Preprocess the tokens field, reproducable results using seed
     seed = read_variable_from_config(dir_path, "seed")
@@ -73,9 +73,9 @@ def load_train_test_dataset_transformer(
     return train_dataset, test_dataset
 
 
-def read_examples(file_path: Path) -> list[str]:
+def read_samples(file_path: Path) -> list[str]:
     """
-    Reads examples from the generated dataset file and loads them into a list
+    Reads samples from the generated dataset file and loads them into a list
 
     Args:
         file_path (Path): path to the file to read the sentences from
@@ -96,9 +96,9 @@ def read_examples(file_path: Path) -> list[str]:
         raise Exception(f"Error reading file: {file_path}")
 
 
-def write_examples(file_path: str, sentences: str) -> None:
+def write_samples(file_path: str, sentences: str) -> None:
     """
-    Writes the generated examples to the dataset file
+    Writes the generated samples to the dataset file
 
     Args:
         file_path (str): path to the file to write the sentences away to

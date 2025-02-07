@@ -206,7 +206,7 @@ async def async_call_mistral_api(client: Mistral, messages: list[dict], tools: l
             lambda: client.chat.complete(
                 model=os.getenv("MISTRAL_MODEL_NAME"),
                 messages=messages,
-                temperature=0.8,
+                temperature=1.8,
                 tools=tools,
             ),
         )
@@ -233,7 +233,7 @@ async def async_call_openai_api(
     completion = await client.chat.completions.create(
         model=os.getenv("OPENAI_MODEL_NAME"),
         messages=messages,
-        temperature=0.8,
+        temperature=1.8,
         tools=tools,
     )
 
