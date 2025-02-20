@@ -30,7 +30,7 @@ tools = [
                     },
                     "api": {
                         "type": "string",
-                        "description": "Indicator for the kind of API to use to generate the dataset. Can be 'mistral' or 'openai'."
+                        "description": "Identifier of API. Must be 'mistral', 'openai', or 'gemini'."
                     },
                     "nb_samples": {
                         "type": "integer",
@@ -136,6 +136,8 @@ You are given a set of tools that you can use to achieve this task.
 - Always asks the user for ALL of the required arguments of the functions, if they don't provide any, propose something and explain why. 
 - Always asks whether the user wants to add optional arguments.
 - Only start calling tools when you have all the requirements that you need.
+- Only provide suggestions if the user explicitely asks for it
+- Do not make assumptions regarding the input unless explicitely stated in the function description
 """
 
 
@@ -194,65 +196,49 @@ def run_conversation():
         messages.append({"role": "user", "content": user_input})
         
         response = get_completion(
-            api="openai",
+            api="gemini",
             messages=messages,
             tools=tools,
         )
 
-        if response.tool_calls:
+        if response.function_call:
             assistant_message = {
                 "role": "assistant",
-                "content": response.content,
+                "content": response.text,
                 "tool_calls": [
                     {
-                        "id": tool_call.id,
-                        "type": "function",
-                        "function": {
-                            "name": tool_call.function.name,
-                            "arguments": tool_call.function.arguments
-                        }
-                    } for tool_call in response.tool_calls
+                        "name": response.function_call.name,
+                        "arguments": response.function_call.args
+                    }
                 ]
             }
             messages.append(assistant_message)
 
-            for tool_call in response.tool_calls:
-                print("\nAssistant:", response.content)
-                print(f"\nI would like to call the following tool:")
-                print(f"Tool: {tool_call.function.name}")
-                print(f"Arguments: {tool_call.function.arguments}")
-                
-                confirmation = input("\nDo you approve this tool call? (YES/no): ")
-                if confirmation.lower() == 'yes' or confirmation == "":
-                    tool_result = execute_tool(tool_call.function.name, tool_call.function.arguments)
-                    tool_result = f"Successfully executed {tool_call.function.name}"
-                    messages.append({
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "name": tool_call.function.name,
-                        "content": tool_result
-                    })
-                    messages.append({
-                        "role": "user",
-                        "content": "What's next?"
-                    })
-                else:
-                    messages.append({
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "name": tool_call.function.name,
-                        "content": "The tool was not approved and thus did not execute"
-                    })
-                    continue
+            print("\nAssistant:", response.text)
+            print(f"\nI would like to call the following tool:")
+            print(f"Tool: {response.function_call.name}")
+            print(f"Arguments: {response.function_call.args}")
+            
+            tool_result = execute_tool(response.function_call.name, response.function_call.args)
+            tool_result = f"Successfully executed {response.function_call.name}"
+            messages.append({
+                "role": "tool",
+                "name": response.function_call.name,
+                "content": tool_result
+            })
+            messages.append({
+                "role": "user",
+                "content": "What's next?"
+            })
 
-            if tool_call.function.name == "inference":
+            if response.function_call.name == "inference":
                 print("The model is ready to be used. My job here is done. Goodbye!")
                 return
 
             response = get_completion(
-                api="openai",
+                api="gemini",
                 messages=messages,
                 tools=tools,
             )
         
-        messages.append({"role": "assistant", "content": response.content})
+        messages.append({"role": "assistant", "content": response.text})
