@@ -2,7 +2,7 @@ from openai import OpenAI, AsyncOpenAI
 from mistralai import Mistral
 from google import genai
 from google.genai import Client, types
-from typing import Optional, Required
+from typing import Optional
 import os
 import asyncio
 
@@ -75,7 +75,7 @@ def get_openai_instance() -> OpenAI:
         OpenAI: client that enables to make calls to OpenAI API
     """
     client = OpenAI(
-        api_key=os.getenv("OPENAI_KEY"),
+        api_key=os.getenv("OPENAI_API_KEY"),
         base_url=os.getenv("OPENAI_BASE_URL"),
     )
     return client
@@ -89,7 +89,7 @@ def get_async_openai_instance() -> AsyncOpenAI:
         AsyncOpenAI: async client that enables to make calls to OpenAI API
     """
     client = AsyncOpenAI(
-        api_key=os.getenv("OPENAI_KEY"),
+        api_key=os.getenv("OPENAI_API_KEY"),
         base_url=os.getenv("OPENAI_BASE_URL"),
     )
     return client
@@ -181,7 +181,8 @@ def call_openai_api(
             tools=tools,
         )
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
+        return
 
     return completion.choices[0].message
 

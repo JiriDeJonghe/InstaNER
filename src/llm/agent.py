@@ -30,7 +30,7 @@ tools = [
                     },
                     "api": {
                         "type": "string",
-                        "description": "Identifier of API. Must be 'mistral', 'openai', or 'gemini'."
+                        "description": "Identifier of API. Must be 'mistral', 'openai', or 'google'."
                     },
                     "nb_samples": {
                         "type": "integer",
@@ -196,34 +196,36 @@ def run_conversation():
         messages.append({"role": "user", "content": user_input})
         
         response = get_completion(
-            api="gemini",
+            api="openai",
             messages=messages,
             tools=tools,
         )
 
-        if response.function_call:
+        if response.tool_calls:
+            tool_name = response.tool_calls[0].function.name
+            tool_arguments = response.tool_calls[0].function.arguments
             assistant_message = {
                 "role": "assistant",
-                "content": response.text,
+                "content": response.content,
                 "tool_calls": [
                     {
-                        "name": response.function_call.name,
-                        "arguments": response.function_call.args
+                        "name": tool_name,
+                        "arguments": tool_arguments
                     }
                 ]
             }
             messages.append(assistant_message)
 
-            print("\nAssistant:", response.text)
-            print(f"\nI would like to call the following tool:")
-            print(f"Tool: {response.function_call.name}")
-            print(f"Arguments: {response.function_call.args}")
+            print("\nAssistant:", response.content)
+            print(f"\nExecuting the following tool:")
+            print(f"Tool: {tool_name}")
+            print(f"Arguments: {tool_arguments}")
             
-            tool_result = execute_tool(response.function_call.name, response.function_call.args)
-            tool_result = f"Successfully executed {response.function_call.name}"
+            tool_result = execute_tool(tool_name, tool_arguments)
+            tool_result = f"Successfully executed {tool_name}"
             messages.append({
                 "role": "tool",
-                "name": response.function_call.name,
+                "name": tool_name,
                 "content": tool_result
             })
             messages.append({
@@ -231,14 +233,14 @@ def run_conversation():
                 "content": "What's next?"
             })
 
-            if response.function_call.name == "inference":
+            if tool_name == "inference":
                 print("The model is ready to be used. My job here is done. Goodbye!")
                 return
 
             response = get_completion(
-                api="gemini",
+                api="openai",
                 messages=messages,
                 tools=tools,
             )
         
-        messages.append({"role": "assistant", "content": response.text})
+        messages.append({"role": "assistant", "content": response.content})
