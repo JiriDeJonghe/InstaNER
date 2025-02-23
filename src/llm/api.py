@@ -257,7 +257,7 @@ async def async_call_mistral_api(client: Mistral, messages: list[dict], tools: l
             lambda: client.chat.complete(
                 model=os.getenv("MISTRAL_MODEL_NAME"),
                 messages=messages,
-                temperature=1.8,
+                temperature=0.5,
                 tools=tools,
             ),
         )
@@ -284,7 +284,7 @@ async def async_call_openai_api(
     completion = await client.chat.completions.create(
         model=os.getenv("OPENAI_MODEL_NAME"),
         messages=messages,
-        temperature=1.8,
+        temperature=0.5,
         tools=tools,
     )
 
@@ -310,9 +310,9 @@ async def async_call_google_api(
         contents += f"{message["role"]}: {message["content"]}\n"
 
     if tools:
-        config = types.GenerateContentConfig(temperature = 1.8, tools=convert_openai_tools_to_gemini(tools))
+        config = types.GenerateContentConfig(temperature = 0.5, tools=convert_openai_tools_to_gemini(tools))
     else:
-        config = types.GenerateContentConfig(temperature = 1.8)
+        config = types.GenerateContentConfig(temperature = 0.5)
 
     try:
         completion = await asyncio.get_event_loop().run_in_executor(

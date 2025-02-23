@@ -16,10 +16,9 @@ I- indicated the token is inside the same entity
 Generate a total of 20 examples with the following requirements:
 - It's a JSON object showing all the example sentences
 - Do not repeat the same examples provided below
-- Make the examples cover a wide variety of entities
+- Make the examples cover a wide variety of entities and topics
 - Be creative with your examples, they should offer enough variety 
 - Not each entity should be present in each example
-- The results should be encapsulated by ```json```
 - Follow the structure of the example below:
 {formatting_guides}
 </formatting>

@@ -202,6 +202,7 @@ def run_conversation():
         )
 
         if response.tool_calls:
+            tool_id = response.tool_calls[0].id
             tool_name = response.tool_calls[0].function.name
             tool_arguments = response.tool_calls[0].function.arguments
             assistant_message = {
@@ -209,8 +210,12 @@ def run_conversation():
                 "content": response.content,
                 "tool_calls": [
                     {
-                        "name": tool_name,
-                        "arguments": tool_arguments
+                        "id": tool_id,
+                        "type": "function",
+                        "function": {
+                            "name": tool_name,
+                            "arguments": tool_arguments
+                        }
                     }
                 ]
             }
@@ -225,6 +230,7 @@ def run_conversation():
             tool_result = f"Successfully executed {tool_name}"
             messages.append({
                 "role": "tool",
+                "tool_call_id": tool_id,
                 "name": tool_name,
                 "content": tool_result
             })
@@ -242,5 +248,5 @@ def run_conversation():
                 messages=messages,
                 tools=tools,
             )
-        
+
         messages.append({"role": "assistant", "content": response.content})

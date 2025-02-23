@@ -140,10 +140,7 @@ async def create_dataset(
             except Exception as e:
                 retry_count += 1
                 wait_time = 2**retry_count
-                print(f"Failed generating samples: {e}")
-                print(f"Sleeping {wait_time} seconds")
                 await asyncio.sleep(wait_time)
-                print("Trying again...")
 
     async def make_calls():
         total_calls = int(math.ceil(nb_samples / 20))
@@ -176,9 +173,6 @@ def clean_output(string: str) -> list[dict[str, str]]:
             sentences = result_json["sentences"]
             return sentences
         except:
-            print(string)
             raise InvalidLLMResponseException("JSON does not contain sentences field", result_code)
     else:
-        print("No JSON tags")
-        print(string)
         raise InvalidLLMResponseException("unable to identify JSON tags", result_code)
